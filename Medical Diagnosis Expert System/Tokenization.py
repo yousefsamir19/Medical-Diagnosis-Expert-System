@@ -73,47 +73,32 @@ matched_symptoms = extract_symptoms(text)
 #prepare the data
 from experta import *
 
-# def matched_diseases():
-class diseases_symptom(Fact):
-    pass
-class diseases_matched(Fact):
-    pass
-class MedicalExpertSystem(KnowledgeEngine):
-    def __init__(self,matched_symptoms,patterns):
-        super().__init__()
-        self.matched_symptoms = matched_symptoms
-        self.knowledge_base = patterns
-    @DefFacts()
-    def _initial_action(self):
-        # yield Fact(action="find_disease")
-        for symptom in self.matched_symptoms:
-            yield diseases_symptom(name=symptom)
-    @Rule()
-    def diagonise(self):
-        for obj in self.knowledge_base:
-            #i want to get the intersection with eah disease and if it is not empty, add the matched as facts and missed symptomps also 
-            matched = set(obj["symptoms"]).intersection(set(self.matched_symptoms))
-            if matched:
-                missed = set(obj["symptoms"]).difference(set(self.matched_symptoms))
-                self.declare(diseases_matched(id=obj["id"], 
-                                            name=obj["name"],
-                                            matched=list(matched),
-                                            missed=list(missed),
-                                            counter=len(matched),
-                                            ))
+def matched_diseases():
+    class diseases_symptom(Fact):
+        pass
+    class diseases_matched(Fact):
+        pass
+    class MedicalExpertSystem(KnowledgeEngine):
+        def __init__(self,matched_symptoms,knowledge_base):
+            super().__init__()
+            self.matched_symptoms = matched_symptoms
+            self.knowledge_base = knowledge_base
+        @DefFacts()
+        def _initial_action(self):
+            # yield Fact(action="find_disease")
+            for symptom in self.matched_symptoms:
+                yield diseases_symptom(name=symptom)
+        @Rule()
+        def diagonise(self):
+            for obj in self.knowledge_base:
+                #i want to get the intersection with eah disease and if it is not empty, add the matched as facts and missed symptomps also 
+                matched = set(obj["symptoms"]).intersection(set(self.matched_symptoms))
+                if matched:
+                    missed = set(obj["symptoms"]).difference(set(self.matched_symptoms))
+                    self.declare(diseases_matched(id=obj["id"], 
+                                                name=obj["name"],
+                                                matched=list(matched),
+                                                missed=list(missed),
+                                                counter=len(matched),
+                                                ))
 
-
-engine = MedicalExpertSystem(matched_symptoms,patterns)
-engine.reset()    
-engine.run()         
-#i want to print   dieases_matched that is knowledge base
-results_for_logic_lead = []
-
-for fact in engine.facts.values():
-    if isinstance(fact, diseases_matched):
-        if fact['counter']/len(fact['matched'] + fact['missed']) >= 0.2:  # Only include diseases with at least 50% symptom match
-           results_for_logic_lead.append(dict(fact))
-
-for res in results_for_logic_lead:
-    print(res)    
-len(results_for_logic_lead)
