@@ -1,8 +1,9 @@
 import pandas as pd
+import os
 
 def load_data():
     
- df = pd.read_csv("Medical Diagnosis Expert System.csv")
+ df = pd.read_csv(os.path.join(os.path.dirname(__file__), "Medical Diagnosis Expert System.csv"))
  
  df.columns = df.columns.str.strip().str.lower()
  
@@ -24,10 +25,17 @@ def load_data():
     for symptom_list in df["symptoms"]
     for symptom in symptom_list))
  
- knowledge = {}
+ knowledge = []
  for _, row in df.iterrows():
-     knowledge[row["disease"]] = {
-         "symptoms": row["symptoms"],
-         "precautions": row["precautions"]}
+   i=0
+   knowledge.append({
+      "id": i,
+      "name": row["disease"],
+      "symptoms": row["symptoms"],
+      "precautions": row["precautions"]
+     })
+   i+=1
      
  return knowledge, all_symptoms
+
+patterns, all_symptoms = load_data()
