@@ -1,6 +1,7 @@
 import data_prep as data
 import Tokenization as tk
 from ExpertSystem import MedicalExpertSystem, diseases_matched
+from output_formatter import format_and_display_results
 from collections import Counter
 from functools import reduce
 from nltk import word_tokenize
@@ -63,6 +64,7 @@ if matched_symptoms:
                 break
         else:
             break
+        format_and_display_results(results, patterns)
 
 
 
