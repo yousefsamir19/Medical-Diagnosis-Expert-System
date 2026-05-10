@@ -42,12 +42,15 @@ def ask_clarifying_questions(res, current_matched_symptoms):
         else:
             answer = input(f"Are you experiencing {symp}? (y/n): ").strip().lower()
             already_asked.append(symp)
-            if answer == "y":
+            if answer == "y" or answer == "yes":
                 current_matched_symptoms.append(symp)
                 print(current_matched_symptoms)
                 return True
     print(current_matched_symptoms)
     return False
+
+
+
 
 
 if matched_symptoms:
@@ -58,13 +61,14 @@ if matched_symptoms:
         #sort according to the CF (descending)
         results = [dict(fact) for fact in engine.facts.values() if isinstance(fact, diseases_matched)]
         results.sort(key=lambda x: x['cf'], reverse=True)
-
         if results and results[0]['cf'] < 0.8:
             if not ask_clarifying_questions(results, matched_symptoms):
                 break
         else:
             break
-        format_and_display_results(results, patterns)
+    format_and_display_results(results, patterns)
+    
+    
 
 
 

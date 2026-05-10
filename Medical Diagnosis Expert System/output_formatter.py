@@ -11,18 +11,20 @@ def format_and_display_results(results, patterns):
         for entry in patterns
     }
 
-   
+    
     sorted_results = sorted(results, key=lambda x: x["cf"], reverse=True)
-
+    
     
     print("\n" + "=" * 45)
     print("            Diagnosis Results")
     print("=" * 45)
-
+    displayed=[]
     for disease in sorted_results:
         name       = disease["name"].replace("_", " ").title()
         percentage = round(disease["cf"] * 100, 1)
-        print(f"  · {name}: {percentage}%")
+        if name not in displayed:
+            displayed.append(name)
+            print(f"  · {name}: {percentage}%")
 
    
     top_disease    = sorted_results[0]

@@ -3,7 +3,7 @@ from experta import *
 #task 2
 #prepare the data
 
-
+patterns=['breathlessness', 'chest_pain', 'sweating']
 class diseases_symptom(Fact):
     pass
 
@@ -33,7 +33,7 @@ class MedicalExpertSystem(KnowledgeEngine):
                 if matched:
                     missed = set(obj["symptoms"]).difference(set(self.matched_symptoms))
                     certainty = len(matched) / (len(matched) + len(missed))
-                    self.declare(diseases_matched(id=obj["id"],
+                    self.declare(diseases_matched(
                                                   name=obj["name"],
                                                   matched=list(matched),
                                                   missed=list(missed),
